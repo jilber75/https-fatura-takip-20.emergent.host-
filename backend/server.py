@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from starlette.middleware.cors import CORSMiddleware
 
 from ai import APP_NAME, extract_invoice, get_object, init_storage, put_object
+from reminders import router as reminders_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -420,6 +421,7 @@ async def update_tx(tid: str, body: TxIn, _=Depends(require("transactions"))):
     data = body.model_dump()
     if data["status"] == "pending" and not data["due_date"]:
         data["due_date"] = data["date"]
+    data["reminded"] = False
     res = await db.transactions.update_one({"id": tid}, {"$set": data})
     if not res.matched_count:
         raise HTTPException(404, "İşlem bulunamadı")
@@ -681,6 +683,7 @@ async def root():
 
 
 app.include_router(api)
+app.include_router(reminders_router)
 app.add_middleware(CORSMiddleware, allow_credentials=True, allow_origins=os.environ.get("CORS_ORIGINS", "*").split(","),
                    allow_methods=["*"], allow_headers=["*"])
 

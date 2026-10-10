@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { KeyRound, Plus, Save, Trash2 } from "lucide-react";
+import { BellRing, KeyRound, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { api, errMsg } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
@@ -60,6 +60,58 @@ function RatesCard() {
   );
 }
 
+function RemindersCard({ users }) {
+  const [c, setC] = useState(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { api.get("/settings/reminders").then((r) => setC(r.data)); }, []);
+  if (!c) return null;
+  const save = async (patch) => {
+    const next = { ...c, ...patch };
+    setC(next);
+    try { const { data } = await api.put("/settings/reminders", { enabled: next.enabled, days_before: next.days_before, recipient_ids: next.recipient_ids }); setC(data); toast.success("Hatırlatma ayarları kaydedildi"); }
+    catch (e) { toast.error(errMsg(e)); }
+  };
+  const toggle = (id, on) => save({ recipient_ids: on ? [...c.recipient_ids, id] : c.recipient_ids.filter((x) => x !== id) });
+  const sendNow = async () => {
+    setBusy(true);
+    try {
+      const { data } = await api.post("/reminders/send-now");
+      if (!data.items) toast.info("Yaklaşan vadeli kayıt yok, e-posta gönderilmedi");
+      else if (data.errors?.length) toast.error(data.errors.join(" · "));
+      else toast.success(`${data.items} kayıt için ${data.sent} alıcıya e-posta gönderildi`);
+      api.get("/settings/reminders").then((r) => setC(r.data));
+    } catch (e) { toast.error(errMsg(e)); } finally { setBusy(false); }
+  };
+  return (
+    <div className="fp-card p-5 mt-8 max-w-xl" data-testid="reminders-card">
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold flex items-center gap-2"><BellRing size={16} className="text-amber-400" /> Vade Hatırlatma E-postası</h3>
+        <Switch checked={c.enabled} onCheckedChange={(v) => save({ enabled: v })} data-testid="reminders-enabled-switch" />
+      </div>
+      <p className="text-xs text-slate-500 mt-1 mb-4">Her sabah 09:00'da (İstanbul) vadesine az kalan ve gecikmiş bekleyen ödeme/tahsilatlar e-postayla bildirilir. Her kayıt bir kez hatırlatılır; vadesi değişirse yeniden hatırlatılır.</p>
+      <div className="flex items-center gap-3 mb-4">
+        <span className="text-sm text-slate-300">Vadeden</span>
+        <Input type="number" min={1} max={30} value={c.days_before} onChange={(e) => setC({ ...c, days_before: e.target.value })}
+          onBlur={(e) => save({ days_before: Math.min(30, Math.max(1, parseInt(e.target.value, 10) || 3)) })} className="w-20 num" data-testid="reminders-days-input" />
+        <span className="text-sm text-slate-300">gün önce hatırlat</span>
+      </div>
+      <div className="text-xs text-slate-400 mb-2">Alıcılar</div>
+      <div className="space-y-2 mb-4">
+        {users.filter((u) => u.active !== false).map((u) => (
+          <label key={u.id} className="flex items-center gap-2 text-sm">
+            <Checkbox checked={c.recipient_ids.includes(u.id)} onCheckedChange={(v) => toggle(u.id, !!v)} data-testid={`reminder-recipient-${u.email}`} />
+            {u.name} <span className="text-slate-500 text-xs">{u.email}</span>
+          </label>
+        ))}
+      </div>
+      <div className="flex items-center gap-3">
+        <button onClick={sendNow} disabled={busy} className="h-9 px-4 rounded-full border border-slate-700 hover:border-amber-400 text-sm disabled:opacity-50" data-testid="reminders-send-now-button">{busy ? "Gönderiliyor…" : "Şimdi Gönder"}</button>
+        {c.last_run && <span className="text-xs text-slate-500" data-testid="reminders-last-run">Son çalışma: {new Date(c.last_run).toLocaleString("tr-TR")}</span>}
+      </div>
+    </div>
+  );
+}
+
 function UserRow({ u, me, onEdit, onChanged }) {
   const [perms, setPerms] = useState(u.permissions);
   useEffect(() => setPerms(u.permissions), [u]);
@@ -113,7 +165,10 @@ export default function Users() {
           <tbody>{rows.map((u) => <UserRow key={u.id} u={u} me={user.id} onEdit={(x) => setDlg({ open: true, initial: x })} onChanged={load} />)}</tbody>
         </table>
       </div>
-      <RatesCard />
+      <div className="grid xl:grid-cols-2 gap-x-6">
+        <RemindersCard users={rows} />
+        <RatesCard />
+      </div>
       <UserDialog open={dlg.open} onOpenChange={(o) => setDlg((p) => ({ ...p, open: o }))} initial={dlg.initial} onSaved={load} />
     </div>
   );
