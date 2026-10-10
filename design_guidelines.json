@@ -1,0 +1,210 @@
+{
+  "app_identity": {
+    "name": "FinansPulse - Modern Finansal Yönetim & Nakit Akışı Platformu",
+    "theme_type": "Koyu Tema (Dark Mode)",
+    "archetype": "THE PERFORMANCE PRO / HIGH-CONTRAST DARK FINTECH",
+    "target_audience": "Türkiye'deki KOBİ sahipleri, finans yöneticileri, ön muhasebe ekipleri ve girişimciler.",
+    "ui_language": "Turkish (Türkçe)",
+    "currencies_supported": ["TRY (₺)", "USD ($)", "EUR (€)"]
+  },
+  "design_principles": [
+    "1. Tactical Dark Surface Hierarchy: Use 3-tier dark obsidian luminance (#090a0f canvas -> #12141c card -> #1a1e2e inner/hover) with subtle 1px slate borders (#1e293b) instead of flat dark backgrounds.",
+    "2. High Contrast Signal Accents: Reserve chromatic colors for financial status signals (Emerald #10b981 for revenue/positive flow, Crimson #ef4444 for expenses/overdue, Amber #f59e0b for upcoming payables, Indigo #6366f1 for active balance/AI triggers).",
+    "3. Precision Data Display: Render financial amounts, IBANs, invoice numbers, tax IDs, and percentages with crisp monospace fonts (JetBrains Mono / Geist Mono) and clear currency symbols.",
+    "4. Frictionless User Switching & Permissions: Provide an instant 1-click user switcher among 4 distinct pre-configured users with dynamic module permission enforcement.",
+    "5. Generous Internal Spacing: Maintain internal padding (p-5 or p-6) on card containers to prevent collisions between numbers, badges, and borders."
+  ],
+  "colors": {
+    "background_canvas": "#090a0f",
+    "surface_card": "#12141c",
+    "surface_card_hover": "#161924",
+    "surface_nested": "#1a1e2e",
+    "border_subtle": "#1e293b",
+    "border_focus": "#334155",
+    "primary_emerald": "#10b981",
+    "primary_indigo": "#6366f1",
+    "warning_amber": "#f59e0b",
+    "danger_crimson": "#ef4444",
+    "text_primary": "#f8fafc",
+    "text_secondary": "#94a3b8",
+    "text_muted": "#64748b",
+    "forbidden_colors": ["#1B93A4", "#7351B7"]
+  },
+  "typography": {
+    "heading_font": "Plus Jakarta Sans, Barlow, sans-serif",
+    "body_font": "Inter, DM Sans, sans-serif",
+    "mono_font": "JetBrains Mono, Geist Mono, monospace",
+    "scale": {
+      "h1": "text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-50",
+      "h2": "text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-100",
+      "h3": "text-lg sm:text-xl font-semibold text-slate-200",
+      "body": "text-sm sm:text-base text-slate-300 leading-relaxed",
+      "caption": "text-xs font-medium text-slate-400",
+      "mono_data": "font-mono tracking-tight font-semibold text-slate-100"
+    }
+  },
+  "layout_structure": {
+    "grid_mode": "MODE B High Density Grid (grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6)",
+    "sidebar": "Fixed left navigation (260px) with logo, active user badge, quick currency toggle, and module navigation items.",
+    "header": "Top glassmorphism bar (backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80) with live date/time, search bar, currency exchange rate ticker (USD/TRY, EUR/TRY), notification bell, and quick user role switcher dropdown.",
+    "content_area": "Main scrollable section with p-4 sm:p-6 max-w-7xl mx-auto space-y-6"
+  },
+  "core_modules_and_features": {
+    "dashboard": {
+      "name": "Genel Bakış (Dashboard)",
+      "components": [
+        "4 KPI Summary Cards: Net Nakit Akışı, Toplam Gelir, Toplam Gider, Yaklaşan Ödemeler/Tahsilatlar",
+        "Anlık Nakit Akışı Grafiği (Recharts Area/Bar chart with project vs actual line)",
+        "Banka Hesapları Hızlı Bakış (Garanti, Akbank, İş Bankası, Yapı Kredi, Ziraat cards)",
+        "Son Finansal Hareketler Tablosu (Quick filters: Gelir, Gider, Hepsi)",
+        "Hızlı Eylem Butonları: Fatura Yükle, Yeni Gelir/Gider Ekle, Cari Hesap Oluştur"
+      ]
+    },
+    "transactions": {
+      "name": "Gelir & Gider Yönetimi",
+      "components": [
+        "Filterable DataTable: Tarih, Açıklama, Kategori, Cari/Hesap, Tutar, Para Birimi, Durum (Ödendi/Bekliyor), İşlemler",
+        "Kategoriye Göre Renkli Etiketler (Badges)",
+        "Yeni Gelir / Gider Ekleme Modalı (Cari seçimi, banka hesabı seçimi, 8 harici kategori seçimi, KDV hesaplama)",
+        "Filtreleme: Tarih aralığı, Gelir/Gider türü, Para birimi (TRY, USD, EUR)"
+      ]
+    },
+    "bank_accounts": {
+      "name": "Banka Hesapları",
+      "components": [
+        "Visual Credit/Debit Bank Cards (Banka Logosu, IBAN kopyalama butonu, Hesap Sahibi, Bakiye)",
+        "Para Birimi Bazlı Bakiyeler (TRY, USD, EUR)",
+        "Hesaplar Arası Transfer (Virman) Modalı",
+        "Yeni Banka Hesabı Ekleme Drawer/Modalı"
+      ]
+    },
+    "cari_accounts": {
+      "name": "Cari Hesaplar (Müşteri & Tedarikçi)",
+      "components": [
+        "Müşteriler & Tedarikçiler Ayrımı (Tabs: Müşteriler, Tedarikçiler, Tümü)",
+        "Alacak / Borç Bakiyesi Göstergeleri (Kırmızı/Yeşil tutar kartları)",
+        "Cari Detay Drawer: İletişim bilgileri, VKN/TCKN, Geçmiş faturalar ve nakit hareketleri",
+        "Yeni Cari Ekleme Formu"
+      ]
+    },
+    "invoices": {
+      "name": "Fatura Yükleme & AI Analizi",
+      "components": [
+        "Sürükle-Bırak Fatura Yükleme Alanı (Gelen Fatura / Kesilen Fatura)",
+        "AI OCR Simülasyonu & Tarama Animasyonu (Yüklenen belgeden otomatik Firma, Fatura No, Tarih, KDV, Matrah, Toplam Tutar ve Kategori Çıkarma)",
+        "Analiz Sonucu Onaylama Formu (Kullanıcı AI sonuçlarını gözden geçirip 1-tıkla Gelir veya Gider olarak kaydeder)"
+      ]
+    },
+    "due_tracker": {
+      "name": "Yaklaşan Ödemeler ve Tahsilatlar",
+      "components": [
+        "Zaman Çizelgesi & Takvim Görünümü",
+        "Vadeye Kalan Gün Uyarısı (Günü geçenler: Kırmızı, 3 gün kalanlar: Turuncu, Gelecek: Mavi)",
+        "Hızlı 'Ödendi / Tahsil Edildi İşaretle' Aksiyonu"
+      ]
+    },
+    "reports": {
+      "name": "Finansal Raporlar",
+      "components": [
+        "8 Gider Kategorisi Dağılım Donut Grafiği",
+        "Aylık Kar-Zarar Karşılaştırma Bar Grafiği",
+        "Nakit Akışı Tahmin Tablosu",
+        "Dışa Aktar Butonları (PDF / Excel / CSV simülasyonu)"
+      ]
+    },
+    "expense_categories": {
+      "name": "8 Düzenlenebilir Gider Kategorisi",
+      "default_categories": [
+        {"id": 1, "name": "Personel & Maaşlar", "color": "#3b82f6", "icon": "Users"},
+        {"id": 2, "name": "Ofis & Kira Giderleri", "color": "#8b5cf6", "icon": "Building"},
+        {"id": 3, "name": "Yazılım & Bilişim Teknolojileri", "color": "#06b6d4", "icon": "Cpu"},
+        {"id": 4, "name": "Pazarlama & Reklam", "color": "#ec4899", "icon": "Megaphone"},
+        {"id": 5, "name": "Lojistik & Ulaşım", "color": "#f59e0b", "icon": "Truck"},
+        {"id": 6, "name": "Danışmanlık & Hukuk", "color": "#10b981", "icon": "ShieldCheck"},
+        {"id": 7, "name": "Banka Giderleri & Komisyon", "color": "#64748b", "icon": "CreditCard"},
+        {"id": 8, "name": "Vergiler & Harçlar", "color": "#ef4444", "icon": "Receipt"}
+      ],
+      "feature": "Kullanıcı istediği 8 kategorinin adını, rengini ve ikonunu dilediği gibi düzenleyebilir, yenisini oluşturabilir."
+    },
+    "user_management": {
+      "name": "Kullanıcı Yönetimi & Modül Yetkileri",
+      "users": [
+        {
+          "id": "user-1",
+          "name": "Ahmet Yılmaz",
+          "title": "Genel Müdür (Admin)",
+          "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85",
+          "role": "Süper Yönetici",
+          "permissions": {"dashboard": true, "transactions": true, "bank_accounts": true, "cari_accounts": true, "invoices": true, "due_tracker": true, "reports": true, "categories": true, "user_management": true}
+        },
+        {
+          "id": "user-2",
+          "name": "Ayşe Demir",
+          "title": "Finans Müdürü",
+          "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85",
+          "role": "Finans Yöneticisi",
+          "permissions": {"dashboard": true, "transactions": true, "bank_accounts": true, "cari_accounts": true, "invoices": true, "due_tracker": true, "reports": true, "categories": true, "user_management": false}
+        },
+        {
+          "id": "user-3",
+          "name": "Mehmet Kaya",
+          "title": "Muhasebe Uzmanı",
+          "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85",
+          "role": "Muhasebe",
+          "permissions": {"dashboard": true, "transactions": true, "bank_accounts": true, "cari_accounts": false, "invoices": true, "due_tracker": true, "reports": false, "categories": false, "user_management": false}
+        },
+        {
+          "id": "user-4",
+          "name": "Zeynep Çelik",
+          "title": "Satış & Cari Temsilcisi",
+          "avatar": "https://images.unsplash.com/photo-1685760259914-ee8d2c92d2e0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85",
+          "role": "Satış Temsilcisi",
+          "permissions": {"dashboard": true, "transactions": false, "bank_accounts": false, "cari_accounts": true, "invoices": true, "due_tracker": true, "reports": false, "categories": false, "user_management": false}
+        }
+      ],
+      "permission_matrix": "Interactive matrix with checkboxes per user and per module. Toggling checkboxes instantly updates active privileges."
+    }
+  },
+  "image_urls": {
+    "user_avatars": {
+      "ahmet_yilmaz": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85",
+      "ayse_demir": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85",
+      "mehmet_kaya": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85",
+      "zeynep_celik": "https://images.unsplash.com/photo-1685760259914-ee8d2c92d2e0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBjb3Jwb3JhdGUlMjBwb3J0cmFpdCUyMGhlYWRzaG90fGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85"
+    },
+    "analytics_preview": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjE2NzN8MHwxfHNlYXJjaHwxfHxmaW5hbmNlJTIwZGFzaGJvYXJkJTIwYXZhdGFycyUyMHRyYW5zYWN0aW9uJTIwYW5hbHl0aWNzfGVufDB8fHx8MTc5MTY2MTY3NXww&ixlib=rb-4.1.0&q=85"
+  },
+  "testing_and_data_testids": {
+    "rule": "ALL interactive and key informational elements MUST include a descriptive data-testid attribute in kebab-case.",
+    "examples": [
+      "data-testid='user-switcher-dropdown'",
+      "data-testid='user-select-user-1'",
+      "data-testid='currency-toggle-try'",
+      "data-testid='currency-toggle-usd'",
+      "data-testid='currency-toggle-eur'",
+      "data-testid='nav-dashboard-link'",
+      "data-testid='nav-transactions-link'",
+      "data-testid='nav-bank-accounts-link'",
+      "data-testid='nav-cari-accounts-link'",
+      "data-testid='nav-invoices-link'",
+      "data-testid='nav-due-tracker-link'",
+      "data-testid='nav-reports-link'",
+      "data-testid='nav-categories-link'",
+      "data-testid='nav-user-management-link'",
+      "data-testid='invoice-upload-dropzone'",
+      "data-testid='ai-extract-invoice-button'",
+      "data-testid='confirm-invoice-button'",
+      "data-testid='add-transaction-button'",
+      "data-testid='edit-category-1-button'",
+      "data-testid='permission-checkbox-user-2-reports'"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Use standard React .js / .jsx file structure for the app.",
+    "Ensure dark mode theme is enforced globally with obsidian background #090a0f and card background #12141c.",
+    "Implement dynamic currency conversion throughout all modules when switching between ₺ (TRY), $ (USD), and € (EUR) with realistic exchange rates (e.g., 1 USD = 34.5 TRY, 1 EUR = 37.2 TRY).",
+    "Ensure 4 users are selectable from top header or user management page, and non-permitted modules display a sleek 'Erişim Kısıtlandı / Access Restricted' message when logged in as a restricted user.",
+    "Ensure the invoice uploader simulates AI scanning with progress animation and parses mock supplier, invoice date, subtotal, VAT, and expense category.",
+    "All interactive elements must include data-testid attributes for E2E testing."
+  ]
+}
