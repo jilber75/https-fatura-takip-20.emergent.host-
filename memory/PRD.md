@@ -22,6 +22,9 @@ Yönetici (tam yetki), Finans Müdürü, Muhasebe, Satış & Cari.
 - Dashboard KPI + nakit akışı (6 ay gerçekleşen + 3 ay vadeli), Raporlar (donut, aylık K/Z, KDV, cari, CSV, yazdır)
 - Döviz kurları yönetici tarafından elle girilir (varsayılan 42 / 49 — güncellenmeli)
 
+## Implemented (2026-10-10, iteration 2)
+- Vade hatırlatma e-postası: günlük cron 09:00 Europe/Istanbul (.emergent/crons.yml → POST /api/cron/due-reminders, Bearer WEBHOOK_CRON_SECRET, idempotent run_id), Emergent managed Resend (mailer.py), N gün önce + gecikmiş bekleyen kayıtlar, her kayıt bir kez (vade düzenlenirse sıfırlanır), ayarlar Kullanıcılar sayfasında (aç/kapa, gün, alıcılar, Şimdi Gönder)
+
 ## Backlog
-- P1: Otomatik TCMB kur çekme; tekrarlayan (aylık) giderler; e-posta vade hatırlatma
+- P1: Otomatik TCMB kur çekme; tekrarlayan (aylık) giderler
 - P2: Excel (xlsx) export, bütçe hedefleri, çoklu fatura toplu yükleme
