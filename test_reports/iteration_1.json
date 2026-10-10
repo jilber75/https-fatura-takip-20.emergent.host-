@@ -1,0 +1,40 @@
+{
+  "summary": "First iteration: Backend pytest suite (35 tests) and Playwright smoke covering auth, permissions, dashboard, pages, currency toggle, Users permission matrix, and restricted-user flow. All backend tests pass; all tested frontend flows pass.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dashboard (empty state)", "issues": ["Recharts prints width/height=-1 warnings when cashflow container initially has 0 size; harmless but could be fixed by setting a minHeight on the chart wrapper."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional) Add minHeight on Nakit Akışı chart container to silence recharts width/height=-1 warnings when there are no banks/txs yet."
+  ],
+  "critical_code_review_comments": [
+    "server.py startup uses deprecated @app.on_event; works on current FastAPI but should migrate to lifespan handlers.",
+    "login endpoint sets cookie with samesite=none+secure=True which requires HTTPS; preview is HTTPS so OK, but local dev over HTTP won't persist the cookie — Bearer token path still works.",
+    "/api/caris GET auto-creates a cari when confirming an invoice without match using case-insensitive regex on vendor; vendor is user-controlled and injected into regex — a '.*' style vendor is harmless here but worth escaping with re.escape to be safe.",
+    "Transactions created via transfer have transfer_id but no category/cari; dashboard explicitly filters transfer_id out which is correct.",
+    "banks_with_balance recomputes balance by scanning ALL paid transactions per request (O(banks*txs)); fine for MVP, consider aggregation when data grows.",
+    "No endpoint to delete an invoice file from storage on soft-delete — orphan objects accumulate."
+  ],
+  "updated_files": [
+    "/app/backend/tests/__init__.py",
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {"backend": "100% (35/35)", "frontend": "100% (smoke flows)"},
+  "test_credentials": "jilber75@gmail.com / Finans2026! (admin); kullanici2..4@finanspulse.app / Kullanici2026!",
+  "seed_data_creation": "All test data created with TEST_/test_ prefix was cleaned up by TestZCleanup. Rates and category edits were restored to original values.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend suite lives at /app/backend/tests/backend_test.py. pytest.ini forces -n 2 --dist loadscope; run serial via '-n 0' because tests share module-level state across classes. Frontend data-testids verified: login-*, nav-*-link, currency-toggle-{try,usd,eur}, permission-checkbox-{email}-{module}, save-permissions-{email} (appears only when dirty), rate-usd-input, save-rates-button, access-restricted, add-user-button. Invoice upload (AI extract) was NOT exercised end-to-end — only mime validation covered.",
+  "rca of the issue": "N/A — no bugs found this iteration."
+}
