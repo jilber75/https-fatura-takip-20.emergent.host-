@@ -15,7 +15,6 @@ from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
 
-from ai import get_object, put_object
 from core import client, db, get_current_user, now_iso, verify_password
 
 router = APIRouter(prefix="/api/backups", tags=["backup"])
@@ -64,6 +63,7 @@ async def archive_database():
             if output.tell() > MAX_ARCHIVE:
                 raise ValueError("Archive too large")
         for invoice in await db.invoices.find({"storage_path": {"$type": "string"}}).to_list(length=None):
+            from ai import get_object
             data, mime = await asyncio.to_thread(get_object, invoice["storage_path"])
             if len(data) > MAX_ATTACHMENT:
                 raise ValueError("Invoice attachment too large")
@@ -170,6 +170,7 @@ async def restore(file: UploadFile = File(...), backup_password: str = Form(...)
                 if invoice["id"] in manifest["files"]:
                     meta = manifest["files"][invoice["id"]]
                     data = archive.read(f"attachments/{invoice['id']}")
+                    from ai import put_object
                     stored = await asyncio.to_thread(
                         put_object, f"finanspulse/restores/{target_database}/{invoice['id']}", data, meta["mime"])
                     invoice["storage_path"] = stored["path"]
