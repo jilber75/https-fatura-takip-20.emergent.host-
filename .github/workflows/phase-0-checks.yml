@@ -1,0 +1,22 @@
+name: Phase 0 checks
+on:
+  push:
+    branches: [feature/phase-0-security-backups]
+  pull_request:
+    paths: ["backend/**", "frontend/**", ".github/workflows/phase-0-checks.yml"]
+jobs:
+  compile-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m compileall -q backend
+      - run: pip install -r backend/requirements.txt
+      - name: Test encryption and archive validation
+        env:
+          MONGO_URL: mongodb://localhost:27017
+          DB_NAME: finanspulse_test
+          JWT_SECRET: test-only-ci-value
+        run: cd backend && pytest -q tests/test_backups.py
