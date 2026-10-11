@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import BackupCard from "@/components/BackupCard";
 import { BellRing, KeyRound, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { api, errMsg } from "@/lib/api";
@@ -168,6 +169,7 @@ export default function Users() {
       <div className="grid xl:grid-cols-2 gap-x-6">
         <RemindersCard users={rows} />
         <RatesCard />
+        {user?.role === "admin" && <BackupCard />}
       </div>
       <UserDialog open={dlg.open} onOpenChange={(o) => setDlg((p) => ({ ...p, open: o }))} initial={dlg.initial} onSaved={load} />
     </div>

@@ -14,6 +14,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from ai import APP_NAME, extract_invoice, get_object, init_storage, put_object
 from reminders import router as reminders_router
+from backups import router as backups_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,9 +52,7 @@ async def startup():
         await db.users.insert_one({"id": new_id(), "email": admin_email, "name": "Yönetici", "title": "Genel Müdür",
                                    "role": "admin", "permissions": {m: True for m in MODULES}, "active": True,
                                    "password_hash": hash_password(admin_pw), "created_at": now_iso()})
-    elif not verify_password(admin_pw, existing["password_hash"]):
-        await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_pw)}})
-    for email, name, title, perms in SEED_USERS:
+    for email, name, title, perms in (SEED_USERS if os.environ.get("SEED_DEMO_USERS") == "true" else []):
         if not await db.users.find_one({"email": email}):
             await db.users.insert_one({"id": new_id(), "email": email, "name": name, "title": title, "role": "user",
                                        "permissions": perms, "active": True, "created_at": now_iso(),
@@ -684,7 +683,8 @@ async def root():
 
 app.include_router(api)
 app.include_router(reminders_router)
-app.add_middleware(CORSMiddleware, allow_credentials=True, allow_origins=os.environ.get("CORS_ORIGINS", "*").split(","),
+app.include_router(backups_router)
+app.add_middleware(CORSMiddleware, allow_credentials=True, allow_origins=os.environ.get("CORS_ORIGINS", "").split(","),
                    allow_methods=["*"], allow_headers=["*"])
 
 
