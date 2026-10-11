@@ -23,6 +23,8 @@ COLLECTIONS = ("users", "categories", "settings", "banks", "caris", "transaction
 MAGIC = b"FPBACKUP1"
 MAX_ARCHIVE = 100 * 1024 * 1024
 MAX_ATTACHMENT = 12 * 1024 * 1024
+MAX_MANIFEST = 2 * 1024 * 1024
+MAX_COLLECTION = 30 * 1024 * 1024
 
 
 def admin_only(user=Depends(get_current_user)):
@@ -55,7 +57,7 @@ async def archive_database():
         for name in COLLECTIONS:
             rows = await db[name].find({}).to_list(length=None)
             data = json_util.dumps(rows).encode()
-            if len(data) > MAX_ARCHIVE:
+            if len(data) > MAX_COLLECTION:
                 raise ValueError("Collection too large for manual backup")
             archive.writestr(f"collections/{name}.json", data)
             manifest["collections"][name] = {"count": len(rows), "sha256": hashlib.sha256(data).hexdigest()}
@@ -80,9 +82,18 @@ def validate_archive(raw):
     if len(raw) > MAX_ARCHIVE:
         raise ValueError("Archive too large")
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        members = archive.infolist()
         names = set(archive.namelist())
-        if any(item.file_size > MAX_ARCHIVE for item in archive.infolist()):
-            raise ValueError("Oversized archive member")
+        if len(names) != len(members) or "manifest.json" not in names:
+            raise ValueError("Duplicate or missing archive members")
+        if any(i.file_size > MAX_COLLECTION for i in members if i.filename.startswith("collections/")):
+            raise ValueError("Oversized collection")
+        if any(i.file_size > MAX_ATTACHMENT for i in members if i.filename.startswith("attachments/")):
+            raise ValueError("Oversized attachment")
+        if any(i.file_size > MAX_MANIFEST for i in members if i.filename == "manifest.json"):
+            raise ValueError("Oversized manifest")
+        if sum(i.file_size for i in members) > MAX_ARCHIVE:
+            raise ValueError("Oversized uncompressed archive")
         manifest = json.loads(archive.read("manifest.json"))
         if manifest.get("format") != 1 or set(manifest.get("collections", {})) != set(COLLECTIONS):
             raise ValueError("Incomplete backup")
